@@ -1,6 +1,10 @@
 package org.vut.ifje.project.scanner;
 
 
+import org.vut.ifje.project.reporter.Error;
+import org.vut.ifje.project.reporter.ErrorType;
+import org.vut.ifje.project.reporter.Reporter;
+
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +22,15 @@ public class Scanner {
 
     private final StringCharacterIterator iterator;
     private final List<Token> tokens = new ArrayList<>();
+    private final Reporter reporter = new Reporter();
     private int line = 1;
 
     public Scanner(String source) {
         this.iterator = new StringCharacterIterator(source);
+    }
+
+    public Reporter getReporter() {
+        return reporter;
     }
 
     public List<Token> scan() {
@@ -38,7 +47,6 @@ public class Scanner {
     }
 
     private void scanToken() {
-        // TODO: Error handling with a custom reporter
         switch (iterator.current()) {
             case '(' -> tokens.add(new Token(TokenType.LEFT_PARENTHESIS, "("));
             case ')' -> tokens.add(new Token(TokenType.RIGHT_PARENTHESIS, ")"));
@@ -47,14 +55,16 @@ public class Scanner {
             case '-' -> tokens.add(number(TokenType.NEGATIVE_NUMBER, true));
             case '/' -> comment();
             case '\n' -> ++line;
-            case ' ', '\t', '\r' -> {}
+            case ' ', '\t', '\r' -> {
+            }
             default -> {
                 if (isDigit(iterator.current())) {
                     tokens.add(number(TokenType.POSITIVE_NUMBER, false));
-                }
-
-                if (isAlpha(iterator.current())) {
+                } else if (isAlpha(iterator.current())) {
                     tokens.add(identifier());
+                } else {
+                    String explanation = String.format("unknown symbol '%c'", iterator.current());
+                    reporter.add(new Error(ErrorType.LEXICAL, explanation, line));
                 }
             }
         }
@@ -64,22 +74,23 @@ public class Scanner {
 
     private void comment() {
         if (iterator.next() != '*') {
-            return;     // TODO: error handling
+            reporter.add(new Error(ErrorType.LEXICAL, "unknown symbol '/'", line));
+            return;
         }
 
-        do {
+        while (!done()) {
             iterator.next();
-        } while(!done() && iterator.current() != '*');
 
-        if (!done() && iterator.next() != '/') {
-            return;     // TODO: error handling
+            if (iterator.current() == '*' && iterator.next() == '/') {
+                break;
+            }
         }
     }
 
-    private Token number(TokenType type, boolean consumeSign) {
+    private Token number(TokenType type, boolean tokenContainsSign) {
         StringBuilder lexeme = new StringBuilder();
 
-        if (consumeSign) {
+        if (tokenContainsSign) {
             iterator.next();
         }
 
@@ -125,7 +136,13 @@ public class Scanner {
         // Put the iterator in the correct position to advance in scanToken()
         iterator.previous();
 
-        return new Token(functions.getOrDefault(lexeme.toString(), TokenType.UNKNOWN), lexeme.toString());
+        TokenType type = functions.getOrDefault(lexeme.toString(), TokenType.UNKNOWN);
+        if (type == TokenType.UNKNOWN) {
+            String explanation = String.format("unknown identifier '%s'", lexeme);
+            reporter.add(new Error(ErrorType.LEXICAL, explanation, line));
+        }
+
+        return new Token(type, lexeme.toString());
     }
 
     private boolean isDigit(char character) {
