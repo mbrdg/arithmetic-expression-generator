@@ -4,8 +4,18 @@ package org.vut.ifje.project.scanner;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Scanner {
+    private static final Map<String, TokenType> functions = Map.of(
+            "add", TokenType.ADD,
+            "sub", TokenType.SUB,
+            "mul", TokenType.MUL,
+            "div", TokenType.DIV,
+            "mod", TokenType.MOD,
+            "pow", TokenType.POW
+    );
+
     private final StringCharacterIterator iterator;
     private final List<Token> tokens = new ArrayList<>();
     private int line = 1;
@@ -28,6 +38,7 @@ public class Scanner {
     }
 
     private void scanToken() {
+        // TODO: Error handling with a custom reporter
         switch (iterator.current()) {
             case '(' -> tokens.add(new Token(TokenType.LEFT_PARENTHESIS, "("));
             case ')' -> tokens.add(new Token(TokenType.RIGHT_PARENTHESIS, ")"));
@@ -39,6 +50,10 @@ public class Scanner {
             default -> {
                 if (isDigit(iterator.current())) {
                     tokens.add(number(TokenType.POSITIVE_NUMBER, false));
+                }
+
+                if (isAlpha(iterator.current())) {
+                    tokens.add(identifier());
                 }
             }
         }
@@ -84,8 +99,26 @@ public class Scanner {
         return new Token(type, lexeme.toString());
     }
 
+    private Token identifier() {
+        StringBuilder lexeme = new StringBuilder();
+
+        do {
+            lexeme.append(iterator.current());
+            iterator.next();
+        } while (isAlpha(iterator.current()));
+
+        // Put the iterator in the correct position to advance in scanToken()
+        iterator.previous();
+
+        return new Token(functions.getOrDefault(lexeme.toString(), TokenType.UNKNOWN), lexeme.toString());
+    }
+
     private boolean isDigit(char character) {
         return character >= '0' && character <= '9';
+    }
+
+    private boolean isAlpha(char character) {
+        return character >= 'a' && character <= 'z';
     }
 
     private char lookahead() {

@@ -16,4 +16,5 @@ public enum TokenType {
     POW,
 
     EOF,
+    UNKNOWN,
 }
