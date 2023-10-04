@@ -8,8 +8,8 @@ import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
+    public static String usage(String name) {
+        return "Usage: " + name + " [input-file] [-o output-file]";
     }
 
     public static void main(String[] args) {
