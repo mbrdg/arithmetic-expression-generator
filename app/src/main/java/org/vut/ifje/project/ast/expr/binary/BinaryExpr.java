@@ -19,6 +19,5 @@ abstract public class BinaryExpr extends Expr {
         return right;
     }
 
-    public abstract PrecedenceLevel precedence();
     public abstract char separator();
 }
