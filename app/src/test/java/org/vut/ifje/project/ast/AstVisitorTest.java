@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AstVisitorTest {
-    @Test void visitNumExprTest() {
+    @Test void visitNumExpr() {
         List<String> expected = List.of("100", "-100");
 
         List<Expr> expressions = List.of(
@@ -29,7 +29,7 @@ public class AstVisitorTest {
         assertIterableEquals(actual, expected);
     }
 
-    @Test void visitSimpleBinaryExprTest() {
+    @Test void visitSimpleBinaryExpr() {
         String expected = "1 + 1";
 
         Expr expression = new AddExpr(
@@ -43,17 +43,17 @@ public class AstVisitorTest {
         assertEquals(expected, actual);
     }
 
-    @Test void visitNestedBinaryExprTest() {
+    @Test void visitNestedBinaryExpr() {
         String expected = "1 + 1 * 3 + 2";
 
         Expr expression = new AddExpr(
                 new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1")),
-                new MulExpr(
-                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1")),
-                        new AddExpr(
-                                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "3")),
-                                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "2"))
-                        )
+                new AddExpr(
+                        new MulExpr(
+                            new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1")),
+                            new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "3"))
+                        ),
+                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "2"))
                 )
         );
 
