@@ -129,6 +129,25 @@ public class ScannerTest {
         assertIterableEquals(expected, actual);
     }
 
+    @Test void scanProgramWithComments() {
+        String program = "add( 1, /* This is 1 + 1 */ 1 )";
+
+        List<Token> expected = List.of(
+                new Token(TokenType.ADD, "add"),
+                new Token(TokenType.LEFT_PARENTHESIS, "("),
+                new Token(TokenType.POSITIVE_NUMBER, "1"),
+                new Token(TokenType.COMMA, ","),
+                new Token(TokenType.POSITIVE_NUMBER, "1"),
+                new Token(TokenType.RIGHT_PARENTHESIS, ")"),
+                new Token(TokenType.EOF, "")
+        );
+
+        Scanner scanner = new Scanner(program);
+        List<Token> actual = scanner.scan();
+
+        assertIterableEquals(expected, actual);
+    }
+
     @Test void scanProgramWithNestedOperators() {
         String program = "add(5, mul(3, sub(10, pow(6, 4))))";
 

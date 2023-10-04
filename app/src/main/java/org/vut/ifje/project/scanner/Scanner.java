@@ -45,8 +45,9 @@ public class Scanner {
             case ',' -> tokens.add(new Token(TokenType.COMMA, ","));
             case '+' -> tokens.add(number(TokenType.POSITIVE_NUMBER, true));
             case '-' -> tokens.add(number(TokenType.NEGATIVE_NUMBER, true));
-            case '\r', ' ', '\t' -> {}
+            case '/' -> comment();
             case '\n' -> ++line;
+            case ' ', '\t', '\r' -> {}
             default -> {
                 if (isDigit(iterator.current())) {
                     tokens.add(number(TokenType.POSITIVE_NUMBER, false));
@@ -59,6 +60,20 @@ public class Scanner {
         }
 
         iterator.next();
+    }
+
+    private void comment() {
+        if (iterator.next() != '*') {
+            return;     // TODO: error handling
+        }
+
+        do {
+            iterator.next();
+        } while(!done() && iterator.current() != '*');
+
+        if (!done() && iterator.next() != '/') {
+            return;     // TODO: error handling
+        }
     }
 
     private Token number(TokenType type, boolean consumeSign) {
