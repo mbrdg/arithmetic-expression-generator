@@ -11,6 +11,14 @@ abstract public class BinaryExpr extends Expr {
         this.right = right;
     }
 
+    public Expr left() {
+        return left;
+    }
+
+    public Expr right() {
+        return right;
+    }
+
     public abstract PrecedenceLevel precedence();
     public abstract char separator();
 }
