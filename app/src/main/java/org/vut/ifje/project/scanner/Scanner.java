@@ -8,6 +8,7 @@ import java.util.List;
 public class Scanner {
     private final StringCharacterIterator iterator;
     private final List<Token> tokens = new ArrayList<>();
+    private int line = 1;
 
     public Scanner(String source) {
         this.iterator = new StringCharacterIterator(source);
@@ -31,11 +32,11 @@ public class Scanner {
             case '(' -> tokens.add(new Token(TokenType.LEFT_PARENTHESIS, "("));
             case ')' -> tokens.add(new Token(TokenType.RIGHT_PARENTHESIS, ")"));
             case ',' -> tokens.add(new Token(TokenType.COMMA, ","));
+            case ' ' | '\r' | '\t' -> {}
+            case '\n' -> ++line;
             default -> {}
         }
 
         iterator.next();
     }
-
-
 }
