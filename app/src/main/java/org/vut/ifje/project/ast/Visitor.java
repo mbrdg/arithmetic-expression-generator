@@ -1,4 +1,4 @@
-package org.vut.ifje.project.ast.visitor;
+package org.vut.ifje.project.ast;
 
 import org.vut.ifje.project.ast.expr.binary.*;
 import org.vut.ifje.project.ast.expr.literal.NumExpr;

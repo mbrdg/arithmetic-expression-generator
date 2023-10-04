@@ -1,7 +1,7 @@
 package org.vut.ifje.project.ast.expr.binary;
 
 import org.vut.ifje.project.ast.expr.Expr;
-import org.vut.ifje.project.ast.visitor.Visitor;
+import org.vut.ifje.project.ast.Visitor;
 
 public class SubExpr extends BinaryExpr {
     public SubExpr(Expr left, Expr right) {
