@@ -7,9 +7,107 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ScannerTest {
+    @Test void scanPositiveNumberWithSign() {
+        String number = "+100";
+
+        List<Token> expected = List.of(
+                new Token(TokenType.POSITIVE_NUMBER, "100"),
+                new Token(TokenType.EOF, "")
+        );
+
+        Scanner scanner = new Scanner(number);
+        List<Token> actual = scanner.scan();
+
+        assertIterableEquals(expected, actual);
+    }
+
+    @Test void scanPositiveNumberWithoutSign() {
+        String number = "100";
+
+        List<Token> expected = List.of(
+                new Token(TokenType.POSITIVE_NUMBER, "100"),
+                new Token(TokenType.EOF, "")
+        );
+
+        Scanner scanner = new Scanner(number);
+        List<Token> actual = scanner.scan();
+
+        assertIterableEquals(expected, actual);
+    }
+
+    @Test void scanNegativeNumber() {
+        String number = "-100";
+
+        List<Token> expected = List.of(
+                new Token(TokenType.NEGATIVE_NUMBER, "100"),
+                new Token(TokenType.EOF, "")
+        );
+
+        Scanner scanner = new Scanner(number);
+        List<Token> actual = scanner.scan();
+
+        assertIterableEquals(expected, actual);
+    }
+
+    @Test void scanFractionalNumber() {
+        String number = "100.00";
+
+        List<Token> expected = List.of(
+                new Token(TokenType.POSITIVE_NUMBER, "100.00"),
+                new Token(TokenType.EOF, "")
+        );
+
+        Scanner scanner = new Scanner(number);
+        List<Token> actual = scanner.scan();
+
+        assertIterableEquals(expected, actual);
+    }
+
+    @Test void scanExponentialNumber() {
+        String number = "100e2";
+
+        List<Token> expected = List.of(
+                new Token(TokenType.POSITIVE_NUMBER, "100e2"),
+                new Token(TokenType.EOF, "")
+        );
+
+        Scanner scanner = new Scanner(number);
+        List<Token> actual = scanner.scan();
+
+        assertIterableEquals(expected, actual);
+    }
+
+    @Test void scanPositiveFractionalExponentialNumber() {
+        String number = "100.00e2";
+
+        List<Token> expected = List.of(
+                new Token(TokenType.POSITIVE_NUMBER, "100.00e2"),
+                new Token(TokenType.EOF, "")
+        );
+
+        Scanner scanner = new Scanner(number);
+        List<Token> actual = scanner.scan();
+
+        assertIterableEquals(expected, actual);
+    }
+
+    @Test void scanNegativeFractionalExponentialNumber() {
+        String number = "-100.00e2";
+
+        List<Token> expected = List.of(
+                new Token(TokenType.NEGATIVE_NUMBER, "100.00e2"),
+                new Token(TokenType.EOF, "")
+        );
+
+        Scanner scanner = new Scanner(number);
+        List<Token> actual = scanner.scan();
+
+        assertIterableEquals(expected, actual);
+    }
+
     @Test void scanTest() {
         String mock = "add(5, mul(3, sub(10, pow(6, 4))))";
-        
+
         List<Token> expected = Arrays.asList(
                 new Token(TokenType.ADD, "add"),
                 new Token(TokenType.LEFT_PARENTHESIS, "("),

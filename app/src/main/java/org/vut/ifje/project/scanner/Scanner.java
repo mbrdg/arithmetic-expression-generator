@@ -32,11 +32,66 @@ public class Scanner {
             case '(' -> tokens.add(new Token(TokenType.LEFT_PARENTHESIS, "("));
             case ')' -> tokens.add(new Token(TokenType.RIGHT_PARENTHESIS, ")"));
             case ',' -> tokens.add(new Token(TokenType.COMMA, ","));
-            case ' ' | '\r' | '\t' -> {}
+            case '+' -> tokens.add(number(TokenType.POSITIVE_NUMBER, true));
+            case '-' -> tokens.add(number(TokenType.NEGATIVE_NUMBER, true));
+            case '\r', ' ', '\t' -> {}
             case '\n' -> ++line;
-            default -> {}
+            default -> {
+                if (isDigit(iterator.current())) {
+                    tokens.add(number(TokenType.POSITIVE_NUMBER, false));
+                }
+            }
         }
 
         iterator.next();
+    }
+
+    private Token number(TokenType type, boolean consumeSign) {
+        StringBuilder lexeme = new StringBuilder();
+
+        if (consumeSign) {
+            iterator.next();
+        }
+
+        while (isDigit(iterator.current())) {
+            lexeme.append(iterator.current());
+            iterator.next();
+        }
+
+        if (iterator.current() == '.' && isDigit(lookahead())) {
+            lexeme.append('.');
+            iterator.next();
+
+            do {
+                lexeme.append(iterator.current());
+                iterator.next();
+            } while (isDigit(iterator.current()));
+        }
+
+        if (iterator.current() == 'e' && isDigit(lookahead())) {
+            lexeme.append('e');
+            iterator.next();
+
+            do {
+                lexeme.append(iterator.current());
+                iterator.next();
+            } while (isDigit(iterator.current()));
+        }
+
+        // Put the iterator in the correct position to advance in scanToken()
+        iterator.previous();
+
+        return new Token(type, lexeme.toString());
+    }
+
+    private boolean isDigit(char character) {
+        return character >= '0' && character <= '9';
+    }
+
+    private char lookahead() {
+        char character = iterator.next();
+        iterator.previous();
+
+        return character;
     }
 }
