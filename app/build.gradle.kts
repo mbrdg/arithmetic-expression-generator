@@ -37,6 +37,11 @@ application {
     mainClass.set("org.vut.ifje.project.App")
 }
 
+tasks.named<JavaExec>("run") {
+    // Allow the application to read from stdin.
+    standardInput = System.`in`
+}
+
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
