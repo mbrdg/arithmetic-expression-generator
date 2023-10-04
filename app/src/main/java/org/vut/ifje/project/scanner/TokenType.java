@@ -4,7 +4,9 @@ public enum TokenType {
     LEFT_PARENTHESIS,
     RIGHT_PARENTHESIS,
     COMMA,
-    NUMBER,
+
+    POSITIVE_NUMBER,
+    NEGATIVE_NUMBER,
 
     ADD,
     SUB,
