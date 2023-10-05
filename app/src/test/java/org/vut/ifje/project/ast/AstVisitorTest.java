@@ -5,6 +5,7 @@ import org.vut.ifje.project.ast.expr.Expr;
 import org.vut.ifje.project.ast.expr.binary.AddExpr;
 import org.vut.ifje.project.ast.expr.binary.MulExpr;
 import org.vut.ifje.project.ast.expr.literal.NumExpr;
+import org.vut.ifje.project.reporter.Cursor;
 import org.vut.ifje.project.scanner.Token;
 import org.vut.ifje.project.scanner.TokenType;
 
@@ -17,8 +18,8 @@ public class AstVisitorTest {
         List<String> expected = List.of("100", "-100");
 
         List<Expr> expressions = List.of(
-                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "100")),
-                new NumExpr(new Token(TokenType.NEGATIVE_NUMBER, "100"))
+                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "100", new Cursor())),
+                new NumExpr(new Token(TokenType.NEGATIVE_NUMBER, "100", new Cursor()))
         );
 
         Visitor<String> visitor = new AstVisitor();
@@ -33,8 +34,8 @@ public class AstVisitorTest {
         String expected = "1 + 1";
 
         Expr expression = new AddExpr(
-                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1")),
-                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1"))
+                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1", new Cursor())),
+                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1", new Cursor()))
         );
 
         Visitor<String> visitor = new AstVisitor();
@@ -47,13 +48,13 @@ public class AstVisitorTest {
         String expected = "1 + 1 * 3 + 2";
 
         Expr expression = new AddExpr(
-                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1")),
+                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1", new Cursor())),
                 new AddExpr(
                         new MulExpr(
-                            new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1")),
-                            new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "3"))
+                            new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1", new Cursor())),
+                            new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "3", new Cursor()))
                         ),
-                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "2"))
+                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "2", new Cursor()))
                 )
         );
 
@@ -68,12 +69,12 @@ public class AstVisitorTest {
 
         Expr expression = new MulExpr(
                 new AddExpr(
-                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1")),
-                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1"))
+                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1", new Cursor())),
+                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1", new Cursor()))
                 ),
                 new AddExpr(
-                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "3")),
-                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "2"))
+                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "3", new Cursor())),
+                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "2", new Cursor()))
                 )
         );
 

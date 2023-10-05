@@ -1,5 +1,7 @@
 package org.vut.ifje.project.reporter;
 
+import org.vut.ifje.project.reporter.error.Error;
+
 import java.util.ArrayList;
 import java.util.List;
 

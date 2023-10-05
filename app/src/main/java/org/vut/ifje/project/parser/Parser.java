@@ -3,9 +3,9 @@ package org.vut.ifje.project.parser;
 import org.vut.ifje.project.ast.expr.Expr;
 import org.vut.ifje.project.ast.expr.binary.*;
 import org.vut.ifje.project.ast.expr.literal.NumExpr;
-import org.vut.ifje.project.reporter.Error;
-import org.vut.ifje.project.reporter.ErrorType;
+import org.vut.ifje.project.reporter.Cursor;
 import org.vut.ifje.project.reporter.Reporter;
+import org.vut.ifje.project.reporter.error.SyntaxError;
 import org.vut.ifje.project.scanner.Token;
 import org.vut.ifje.project.scanner.TokenType;
 
@@ -32,9 +32,8 @@ public class Parser {
                 case POSITIVE_NUMBER, NEGATIVE_NUMBER -> tree = number(token);
                 case EOF -> {}
                 default -> {
-                    // TODO: improve error api
                     String explanation = String.format("unexpected token of type %s", token.type());
-                    reporter.add(new Error(ErrorType.SYNTACTICAL, explanation, -1));
+                    reporter.add(new SyntaxError(explanation, token.cursor()));
                 }
             }
 
@@ -48,16 +47,11 @@ public class Parser {
     }
 
     private BinaryExpr function(Token token) {
-        if (!iterator.hasNext()) {
-            reporter.add(new Error(ErrorType.SYNTACTICAL, "", -1));
-        }
-
-        if (iterator.next().type() != TokenType.LEFT_PARENTHESIS) {
-            reporter.add(new Error(ErrorType.SYNTACTICAL, "", -1));
-        }
-
-        if (!iterator.hasNext()) {
-            reporter.add(new Error(ErrorType.SYNTACTICAL, "", -1));
+        if (!iterator.hasNext() || iterator.next().type() != TokenType.LEFT_PARENTHESIS) {
+            reporter.add(new SyntaxError(
+                    "missing '(' after function identifier",
+                    new Cursor(token.cursor().line(), token.cursor().column() + token.lexeme().length())
+            ));
         }
 
         List<Expr> arguments = new ArrayList<>();
@@ -66,31 +60,44 @@ public class Parser {
         switch (firstArgument.type()) {
             case ADD, SUB, MUL, DIV, MOD, POW -> arguments.add(function(firstArgument));
             case POSITIVE_NUMBER, NEGATIVE_NUMBER -> arguments.add(number(firstArgument));
-            default -> reporter.add(new Error(ErrorType.SYNTACTICAL, "", -1));
+            default -> reporter.add(new SyntaxError(
+                    String.format("invalid token of type %s as 1st function argument", firstArgument.type()),
+                    firstArgument.cursor()
+            ));
         }
 
-        if (!iterator.hasNext()) {
-            reporter.add(new Error(ErrorType.SYNTACTICAL, "", -1));
-        }
+        if (!iterator.hasNext() || iterator.next().type() != TokenType.COMMA) {
+            Token previous = iterator.previous();
+            reporter.add(new SyntaxError(
+                    "missing ',' between function arguments",
+                    new Cursor(previous.cursor().line(), previous.cursor().column() + previous.lexeme().length())
+            ));
 
-        if (iterator.next().type() != TokenType.COMMA) {
-            reporter.add(new Error(ErrorType.SYNTACTICAL, "", -1));
+            // Restore back the correct position after the rewind above
+            iterator.next();
         }
 
         Token secondArgument = iterator.next();
         switch (secondArgument.type()) {
             case ADD, SUB, MUL, DIV, MOD, POW -> arguments.add(function(secondArgument));
             case POSITIVE_NUMBER, NEGATIVE_NUMBER -> arguments.add(number(secondArgument));
-            default -> reporter.add(new Error(ErrorType.SYNTACTICAL, "", -1));
+            default -> reporter.add(new SyntaxError(
+                    String.format("invalid token of type %s as 2nd function argument", secondArgument.type()),
+                    firstArgument.cursor()
+            ));
         }
 
-        if (!iterator.hasNext()) {
-            reporter.add(new Error(ErrorType.SYNTACTICAL, "", -1));
+        if (!iterator.hasNext() || iterator.next().type() != TokenType.RIGHT_PARENTHESIS) {
+            Token previous = iterator.previous();
+            reporter.add(new SyntaxError(
+                    "missing ')' after argument list",
+                    new Cursor(previous.cursor().line(), previous.cursor().column() + previous.lexeme().length())
+            ));
+
+            // Restore back the correct position after the rewind above
+            iterator.next();
         }
 
-        if (iterator.next().type() != TokenType.RIGHT_PARENTHESIS) {
-            reporter.add(new Error(ErrorType.SYNTACTICAL, "", -1));
-        }
 
         BinaryExpr expression = null;
         switch (token.type()) {
@@ -100,7 +107,10 @@ public class Parser {
             case DIV -> expression = new DivExpr(arguments.get(0), arguments.get(1));
             case MOD -> expression = new ModExpr(arguments.get(0), arguments.get(1));
             case POW -> expression = new PowExpr(arguments.get(0), arguments.get(1));
-            default -> reporter.add(new Error(ErrorType.SYNTACTICAL, "", -1));
+            default -> reporter.add(new SyntaxError(
+                    String.format("invalid token of type %s as a function name", token.type()),
+                    token.cursor()
+            ));
         }
 
         return expression;

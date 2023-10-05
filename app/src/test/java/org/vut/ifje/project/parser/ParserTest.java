@@ -9,6 +9,7 @@ import org.vut.ifje.project.ast.expr.binary.MulExpr;
 import org.vut.ifje.project.ast.expr.binary.PowExpr;
 import org.vut.ifje.project.ast.expr.binary.SubExpr;
 import org.vut.ifje.project.ast.expr.literal.NumExpr;
+import org.vut.ifje.project.reporter.Cursor;
 import org.vut.ifje.project.scanner.Token;
 import org.vut.ifje.project.scanner.TokenType;
 
@@ -20,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ParserTest {
     @Test void parseNumber() {
         List<Token> tokens = List.of(
-                new Token(TokenType.NEGATIVE_NUMBER, "123")
+                new Token(TokenType.NEGATIVE_NUMBER, "123", new Cursor())
         );
 
-        Expr expected = new NumExpr(new Token(TokenType.NEGATIVE_NUMBER, "123"));
+        Expr expected = new NumExpr(new Token(TokenType.NEGATIVE_NUMBER, "123", new Cursor()));
 
         Visitor<String> visitor = new AstVisitor();
 
@@ -35,18 +36,18 @@ public class ParserTest {
 
     @Test void parseOperation() {
         List<Token> tokens = List.of(
-                new Token(TokenType.SUB, "sub"),
-                new Token(TokenType.LEFT_PARENTHESIS, "("),
-                new Token(TokenType.NEGATIVE_NUMBER, "123"),
-                new Token(TokenType.COMMA, ","),
-                new Token(TokenType.POSITIVE_NUMBER, "10.42"),
-                new Token(TokenType.RIGHT_PARENTHESIS, ")"),
-                new Token(TokenType.EOF, "")
+                new Token(TokenType.SUB, "sub", new Cursor()),
+                new Token(TokenType.LEFT_PARENTHESIS, "(", new Cursor()),
+                new Token(TokenType.NEGATIVE_NUMBER, "123", new Cursor()),
+                new Token(TokenType.COMMA, ",", new Cursor()),
+                new Token(TokenType.POSITIVE_NUMBER, "10.42", new Cursor()),
+                new Token(TokenType.RIGHT_PARENTHESIS, ")", new Cursor()),
+                new Token(TokenType.EOF, "", new Cursor())
         );
 
         Expr expected = new SubExpr(
-                new NumExpr(new Token(TokenType.NEGATIVE_NUMBER, "123")),
-                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "10.42"))
+                new NumExpr(new Token(TokenType.NEGATIVE_NUMBER, "123", new Cursor())),
+                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "10.42", new Cursor()))
         );
 
         Visitor<String> visitor = new AstVisitor();
@@ -59,39 +60,39 @@ public class ParserTest {
 
     @Test void parseNestedOperations() {
         List<Token> tokens = Arrays.asList(
-                new Token(TokenType.ADD, "add"),
-                new Token(TokenType.LEFT_PARENTHESIS, "("),
-                new Token(TokenType.POSITIVE_NUMBER, "5"),
-                new Token(TokenType.COMMA, ","),
-                new Token(TokenType.MUL, "mul"),
-                new Token(TokenType.LEFT_PARENTHESIS, "("),
-                new Token(TokenType.POSITIVE_NUMBER, "3"),
-                new Token(TokenType.COMMA, ","),
-                new Token(TokenType.SUB, "sub"),
-                new Token(TokenType.LEFT_PARENTHESIS, "("),
-                new Token(TokenType.POSITIVE_NUMBER, "10"),
-                new Token(TokenType.COMMA, ","),
-                new Token(TokenType.POW, "pow"),
-                new Token(TokenType.LEFT_PARENTHESIS, "("),
-                new Token(TokenType.POSITIVE_NUMBER, "6"),
-                new Token(TokenType.COMMA, ","),
-                new Token(TokenType.POSITIVE_NUMBER, "4"),
-                new Token(TokenType.RIGHT_PARENTHESIS, ")"),
-                new Token(TokenType.RIGHT_PARENTHESIS, ")"),
-                new Token(TokenType.RIGHT_PARENTHESIS, ")"),
-                new Token(TokenType.RIGHT_PARENTHESIS, ")"),
-                new Token(TokenType.EOF, "")
+                new Token(TokenType.ADD, "add", new Cursor()),
+                new Token(TokenType.LEFT_PARENTHESIS, "(", new Cursor(1, 4)),
+                new Token(TokenType.POSITIVE_NUMBER, "5", new Cursor(1, 5)),
+                new Token(TokenType.COMMA, ",", new Cursor(1, 6)),
+                new Token(TokenType.MUL, "mul", new Cursor(1, 8)),
+                new Token(TokenType.LEFT_PARENTHESIS, "(", new Cursor(1, 11)),
+                new Token(TokenType.POSITIVE_NUMBER, "3", new Cursor(1, 12)),
+                new Token(TokenType.COMMA, ",", new Cursor(1, 13)),
+                new Token(TokenType.SUB, "sub", new Cursor(1, 15)),
+                new Token(TokenType.LEFT_PARENTHESIS, "(", new Cursor(1, 18)),
+                new Token(TokenType.POSITIVE_NUMBER, "10", new Cursor(1, 19)),
+                new Token(TokenType.COMMA, ",", new Cursor(1, 21)),
+                new Token(TokenType.POW, "pow", new Cursor(1, 23)),
+                new Token(TokenType.LEFT_PARENTHESIS, "(", new Cursor(1, 26)),
+                new Token(TokenType.POSITIVE_NUMBER, "6", new Cursor(1, 27)),
+                new Token(TokenType.COMMA, ",", new Cursor(1, 28)),
+                new Token(TokenType.POSITIVE_NUMBER, "4", new Cursor(1, 30)),
+                new Token(TokenType.RIGHT_PARENTHESIS, ")", new Cursor(1, 31)),
+                new Token(TokenType.RIGHT_PARENTHESIS, ")", new Cursor(1, 32)),
+                new Token(TokenType.RIGHT_PARENTHESIS, ")", new Cursor(1, 33)),
+                new Token(TokenType.RIGHT_PARENTHESIS, ")", new Cursor(1, 34)),
+                new Token(TokenType.EOF, "", new Cursor(1, 35))
         );
 
         Expr expected = new AddExpr(
-                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "5")),
+                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "5", new Cursor())),
                 new MulExpr(
-                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "3")),
+                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "3", new Cursor())),
                         new SubExpr(
-                                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "10")),
+                                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "10", new Cursor())),
                                 new PowExpr(
-                                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "6")),
-                                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "4"))
+                                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "6", new Cursor())),
+                                        new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "4", new Cursor()))
                                 )
                         )
                 )
