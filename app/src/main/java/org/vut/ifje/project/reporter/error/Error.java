@@ -10,4 +10,6 @@ public abstract class Error {
         this.explanation = explanation;
         this.cursor = cursor;
     }
+
+    public abstract String print();
 }

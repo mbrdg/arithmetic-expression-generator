@@ -4,7 +4,7 @@ import org.vut.ifje.project.ast.expr.Expr;
 import org.vut.ifje.project.ast.expr.binary.*;
 import org.vut.ifje.project.ast.expr.literal.NumExpr;
 import org.vut.ifje.project.reporter.Cursor;
-import org.vut.ifje.project.reporter.Reporter;
+import org.vut.ifje.project.reporter.ErrorReporter;
 import org.vut.ifje.project.reporter.error.SyntaxError;
 import org.vut.ifje.project.scanner.Token;
 import org.vut.ifje.project.scanner.TokenType;
@@ -15,7 +15,7 @@ import java.util.ListIterator;
 
 public class Parser {
     private final ListIterator<Token> iterator;
-    private final Reporter reporter = new Reporter();
+    private final ErrorReporter reporter = new ErrorReporter();
 
     public Parser(List<Token> tokens) {
         this.iterator = tokens.listIterator();

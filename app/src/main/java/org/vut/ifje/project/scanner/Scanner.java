@@ -2,7 +2,7 @@ package org.vut.ifje.project.scanner;
 
 
 import org.vut.ifje.project.reporter.Cursor;
-import org.vut.ifje.project.reporter.Reporter;
+import org.vut.ifje.project.reporter.ErrorReporter;
 import org.vut.ifje.project.reporter.error.LexicalError;
 
 import java.text.StringCharacterIterator;
@@ -22,14 +22,14 @@ public class Scanner {
 
     private final StringCharacterIterator iterator;
     private final List<Token> tokens = new ArrayList<>();
-    private final Reporter reporter = new Reporter();
+    private final ErrorReporter reporter = new ErrorReporter();
     private final Cursor cursor = new Cursor();
 
     public Scanner(String source) {
         this.iterator = new StringCharacterIterator(source);
     }
 
-    public Reporter getReporter() {
+    public ErrorReporter getReporter() {
         return reporter;
     }
 

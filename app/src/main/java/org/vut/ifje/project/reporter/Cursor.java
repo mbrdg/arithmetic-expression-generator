@@ -53,4 +53,9 @@ public class Cursor {
     public int hashCode() {
         return Objects.hash(line, column);
     }
+
+    @Override
+    public String toString() {
+        return "line=" + line + ',' + " column=" + column;
+    }
 }

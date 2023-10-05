@@ -2,17 +2,8 @@ package org.vut.ifje.project.reporter;
 
 import org.vut.ifje.project.reporter.error.Error;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Reporter {
-    private List<Error> errors = new ArrayList<>();
-
-    public void add(Error error) {
-        errors.add(error);
-    }
-
-    public boolean isEmpty() {
-        return errors.isEmpty();
-    }
+public interface Reporter<R> {
+    public boolean hasErrors();
+    public void add(Error error);
+    public R dump();
 }
