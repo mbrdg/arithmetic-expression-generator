@@ -15,13 +15,15 @@ import org.vut.ifje.project.scanner.TokenType;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParserTest {
     @Test void parseNumber() {
         List<Token> tokens = List.of(
-                new Token(TokenType.NEGATIVE_NUMBER, "123", new Cursor())
+                new Token(TokenType.NEGATIVE_NUMBER, "123", new Cursor()),
+                new Token(TokenType.EOF, "", new Cursor(1, 4))
         );
 
         Expr expected = new NumExpr(new Token(TokenType.NEGATIVE_NUMBER, "123", new Cursor()));
@@ -29,9 +31,10 @@ public class ParserTest {
         Visitor<String> visitor = new AstVisitor();
 
         Parser parser = new Parser(tokens);
-        Expr actual = parser.parse();
+        Optional<? extends Expr> actual = parser.parse();
 
-        assertEquals(expected.accept(visitor), actual.accept(visitor));
+        assertTrue(actual.isPresent());
+        assertEquals(expected.accept(visitor), actual.get().accept(visitor));
     }
 
     @Test void parseOperation() {
@@ -53,9 +56,10 @@ public class ParserTest {
         Visitor<String> visitor = new AstVisitor();
 
         Parser parser = new Parser(tokens);
-        Expr actual = parser.parse();
+        Optional<? extends Expr> actual = parser.parse();
 
-        assertEquals(expected.accept(visitor), actual.accept(visitor));
+        assertTrue(actual.isPresent());
+        assertEquals(expected.accept(visitor), actual.get().accept(visitor));
     }
 
     @Test void parseNestedOperations() {
@@ -101,8 +105,9 @@ public class ParserTest {
         Visitor<String> visitor = new AstVisitor();
 
         Parser parser = new Parser(tokens);
-        Expr actual = parser.parse();
+        Optional<? extends Expr> actual = parser.parse();
 
-        assertEquals(expected.accept(visitor), actual.accept(visitor));
+        assertTrue(actual.isPresent());
+        assertEquals(expected.accept(visitor), actual.get().accept(visitor));
     }
 }
