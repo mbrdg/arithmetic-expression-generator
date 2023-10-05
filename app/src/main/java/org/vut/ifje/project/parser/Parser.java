@@ -36,10 +36,10 @@ public class Parser {
         switch (token.type()) {
             case ADD, SUB, MUL, DIV, MOD, POW -> root = function(token);
             case POSITIVE_NUMBER, NEGATIVE_NUMBER -> root = Optional.of(number(token));
-            default -> {
-                String explanation = String.format("unexpected token of type %s", token.type());
-                reporter.add(new SyntaxError(explanation, token.cursor()));
-            }
+            default -> reporter.add(new SyntaxError(
+                    String.format("unexpected token of type %s", token.type()),
+                    token.cursor()
+            ));
         }
 
         if (!iterator.hasNext()) {

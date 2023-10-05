@@ -6,7 +6,6 @@ import org.vut.ifje.project.reporter.ErrorReporter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ScannerTest {
@@ -19,7 +18,7 @@ public class ScannerTest {
         );
 
         ErrorReporter reporter = new ErrorReporter();
-        
+
         Scanner scanner = new Scanner(number, reporter);
         List<Token> actual = scanner.scan();
 
@@ -181,7 +180,7 @@ public class ScannerTest {
     @Test void scanProgramWithNestedOperators() {
         String program = "add(5, mul(3, sub(10, pow(6, 4))))";
 
-        List<Token> expected = Arrays.asList(
+        List<Token> expected = List.of(
                 new Token(TokenType.ADD, "add", new Cursor()),
                 new Token(TokenType.LEFT_PARENTHESIS, "(", new Cursor(1, 4)),
                 new Token(TokenType.POSITIVE_NUMBER, "5", new Cursor(1, 5)),

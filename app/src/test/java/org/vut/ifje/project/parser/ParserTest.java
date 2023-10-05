@@ -14,7 +14,6 @@ import org.vut.ifje.project.reporter.ErrorReporter;
 import org.vut.ifje.project.scanner.Token;
 import org.vut.ifje.project.scanner.TokenType;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +28,7 @@ public class ParserTest {
 
         Expr expected = new NumExpr(new Token(TokenType.NEGATIVE_NUMBER, "123", new Cursor()));
 
-        Visitor<String> visitor = new AstVisitor();
+        AstVisitor visitor = new AstVisitor();
         ErrorReporter reporter = new ErrorReporter();
 
         Parser parser = new Parser(tokens, reporter);
@@ -56,7 +55,7 @@ public class ParserTest {
                 new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "10.42", new Cursor()))
         );
 
-        Visitor<String> visitor = new AstVisitor();
+        AstVisitor visitor = new AstVisitor();
         ErrorReporter reporter = new ErrorReporter();
 
         Parser parser = new Parser(tokens, reporter);
@@ -68,7 +67,7 @@ public class ParserTest {
     }
 
     @Test void parseNestedOperations() {
-        List<Token> tokens = Arrays.asList(
+        List<Token> tokens = List.of(
                 new Token(TokenType.ADD, "add", new Cursor()),
                 new Token(TokenType.LEFT_PARENTHESIS, "(", new Cursor(1, 4)),
                 new Token(TokenType.POSITIVE_NUMBER, "5", new Cursor(1, 5)),
@@ -107,7 +106,7 @@ public class ParserTest {
                 )
         );
 
-        Visitor<String> visitor = new AstVisitor();
+        AstVisitor visitor = new AstVisitor();
         ErrorReporter reporter = new ErrorReporter();
 
         Parser parser = new Parser(tokens, reporter);
