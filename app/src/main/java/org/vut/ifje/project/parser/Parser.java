@@ -15,10 +15,11 @@ import java.util.ListIterator;
 
 public class Parser {
     private final ListIterator<Token> iterator;
-    private final ErrorReporter reporter = new ErrorReporter();
+    private final ErrorReporter reporter;
 
-    public Parser(List<Token> tokens) {
+    public Parser(List<Token> tokens, ErrorReporter reporter) {
         this.iterator = tokens.listIterator();
+        this.reporter = reporter;
     }
 
     public Expr parse() {
@@ -109,6 +110,7 @@ public class Parser {
             case POW -> expression = new PowExpr(arguments.get(0), arguments.get(1));
             default -> reporter.add(new SyntaxError(
                     String.format("invalid token of type %s as a function name", token.type()),
+                    "did you mean one of the following: 'add', 'sub', 'mul', 'div', 'mod' or 'pow'?",
                     token.cursor()
             ));
         }
