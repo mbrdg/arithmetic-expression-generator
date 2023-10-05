@@ -17,10 +17,11 @@ import java.util.Optional;
 
 public class Parser {
     private final ListIterator<Token> iterator;
-    private final ErrorReporter reporter = new ErrorReporter();
+    private final ErrorReporter reporter;
 
-    public Parser(List<Token> tokens) {
+    public Parser(List<Token> tokens, ErrorReporter reporter) {
         this.iterator = tokens.listIterator();
+        this.reporter = reporter;
     }
 
     public Optional<? extends Expr> parse() {

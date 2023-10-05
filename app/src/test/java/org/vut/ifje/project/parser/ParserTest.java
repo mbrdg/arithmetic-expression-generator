@@ -10,6 +10,7 @@ import org.vut.ifje.project.ast.expr.binary.PowExpr;
 import org.vut.ifje.project.ast.expr.binary.SubExpr;
 import org.vut.ifje.project.ast.expr.literal.NumExpr;
 import org.vut.ifje.project.reporter.Cursor;
+import org.vut.ifje.project.reporter.ErrorReporter;
 import org.vut.ifje.project.scanner.Token;
 import org.vut.ifje.project.scanner.TokenType;
 
@@ -29,11 +30,13 @@ public class ParserTest {
         Expr expected = new NumExpr(new Token(TokenType.NEGATIVE_NUMBER, "123", new Cursor()));
 
         Visitor<String> visitor = new AstVisitor();
+        ErrorReporter reporter = new ErrorReporter();
 
-        Parser parser = new Parser(tokens);
+        Parser parser = new Parser(tokens, reporter);
         Optional<? extends Expr> actual = parser.parse();
 
         assertTrue(actual.isPresent());
+        assertFalse(reporter.hasErrors());
         assertEquals(expected.accept(visitor), actual.get().accept(visitor));
     }
 
@@ -54,11 +57,13 @@ public class ParserTest {
         );
 
         Visitor<String> visitor = new AstVisitor();
+        ErrorReporter reporter = new ErrorReporter();
 
-        Parser parser = new Parser(tokens);
+        Parser parser = new Parser(tokens, reporter);
         Optional<? extends Expr> actual = parser.parse();
 
         assertTrue(actual.isPresent());
+        assertFalse(reporter.hasErrors());
         assertEquals(expected.accept(visitor), actual.get().accept(visitor));
     }
 
@@ -103,11 +108,13 @@ public class ParserTest {
         );
 
         Visitor<String> visitor = new AstVisitor();
+        ErrorReporter reporter = new ErrorReporter();
 
-        Parser parser = new Parser(tokens);
+        Parser parser = new Parser(tokens, reporter);
         Optional<? extends Expr> actual = parser.parse();
 
         assertTrue(actual.isPresent());
+        assertFalse(reporter.hasErrors());
         assertEquals(expected.accept(visitor), actual.get().accept(visitor));
     }
 }

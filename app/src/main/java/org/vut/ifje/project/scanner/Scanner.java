@@ -21,16 +21,13 @@ public class Scanner {
     );
 
     private final StringCharacterIterator iterator;
+    private final ErrorReporter reporter;
     private final List<Token> tokens = new ArrayList<>();
-    private final ErrorReporter reporter = new ErrorReporter();
     private final Cursor cursor = new Cursor();
 
-    public Scanner(String source) {
+    public Scanner(String source, ErrorReporter reporter) {
         this.iterator = new StringCharacterIterator(source);
-    }
-
-    public ErrorReporter getReporter() {
-        return reporter;
+        this.reporter = reporter;
     }
 
     public List<Token> scan() {

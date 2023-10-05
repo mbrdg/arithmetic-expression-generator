@@ -2,6 +2,7 @@ package org.vut.ifje.project.scanner;
 
 import org.junit.jupiter.api.Test;
 import org.vut.ifje.project.reporter.Cursor;
+import org.vut.ifje.project.reporter.ErrorReporter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,9 +18,12 @@ public class ScannerTest {
                 new Token(TokenType.EOF, "", new Cursor(1, 5))
         );
 
-        Scanner scanner = new Scanner(number);
+        ErrorReporter reporter = new ErrorReporter();
+        
+        Scanner scanner = new Scanner(number, reporter);
         List<Token> actual = scanner.scan();
 
+        assertFalse(reporter.hasErrors());
         assertIterableEquals(expected, actual);
     }
 
@@ -31,9 +35,12 @@ public class ScannerTest {
                 new Token(TokenType.EOF, "", new Cursor(1, 4))
         );
 
-        Scanner scanner = new Scanner(number);
+        ErrorReporter reporter = new ErrorReporter();
+
+        Scanner scanner = new Scanner(number, reporter);
         List<Token> actual = scanner.scan();
 
+        assertFalse(reporter.hasErrors());
         assertIterableEquals(expected, actual);
     }
 
@@ -45,9 +52,12 @@ public class ScannerTest {
                 new Token(TokenType.EOF, "", new Cursor(1, 5))
         );
 
-        Scanner scanner = new Scanner(number);
+        ErrorReporter reporter = new ErrorReporter();
+
+        Scanner scanner = new Scanner(number, reporter);
         List<Token> actual = scanner.scan();
 
+        assertFalse(reporter.hasErrors());
         assertIterableEquals(expected, actual);
     }
 
@@ -59,9 +69,12 @@ public class ScannerTest {
                 new Token(TokenType.EOF, "", new Cursor(1, 7))
         );
 
-        Scanner scanner = new Scanner(number);
+        ErrorReporter reporter = new ErrorReporter();
+
+        Scanner scanner = new Scanner(number, reporter);
         List<Token> actual = scanner.scan();
 
+        assertFalse(reporter.hasErrors());
         assertIterableEquals(expected, actual);
     }
 
@@ -73,9 +86,12 @@ public class ScannerTest {
                 new Token(TokenType.EOF, "", new Cursor(1, 6))
         );
 
-        Scanner scanner = new Scanner(number);
+        ErrorReporter reporter = new ErrorReporter();
+
+        Scanner scanner = new Scanner(number, reporter);
         List<Token> actual = scanner.scan();
 
+        assertFalse(reporter.hasErrors());
         assertIterableEquals(expected, actual);
     }
 
@@ -87,9 +103,12 @@ public class ScannerTest {
                 new Token(TokenType.EOF, "", new Cursor(1, 9))
         );
 
-        Scanner scanner = new Scanner(number);
+        ErrorReporter reporter = new ErrorReporter();
+
+        Scanner scanner = new Scanner(number, reporter);
         List<Token> actual = scanner.scan();
 
+        assertFalse(reporter.hasErrors());
         assertIterableEquals(expected, actual);
     }
 
@@ -101,9 +120,12 @@ public class ScannerTest {
                 new Token(TokenType.EOF, "", new Cursor(1, 10))
         );
 
-        Scanner scanner = new Scanner(number);
+        ErrorReporter reporter = new ErrorReporter();
+
+        Scanner scanner = new Scanner(number, reporter);
         List<Token> actual = scanner.scan();
 
+        assertFalse(reporter.hasErrors());
         assertIterableEquals(expected, actual);
     }
 
@@ -125,9 +147,12 @@ public class ScannerTest {
                 new Token(TokenType.EOF, "", new Cursor(1, 28))
         );
 
-        Scanner scanner = new Scanner(program);
+        ErrorReporter reporter = new ErrorReporter();
+
+        Scanner scanner = new Scanner(program, reporter);
         List<Token> actual = scanner.scan();
 
+        assertFalse(reporter.hasErrors());
         assertIterableEquals(expected, actual);
     }
 
@@ -144,9 +169,12 @@ public class ScannerTest {
                 new Token(TokenType.EOF, "", new Cursor(1, 32))
         );
 
-        Scanner scanner = new Scanner(program);
+        ErrorReporter reporter = new ErrorReporter();
+
+        Scanner scanner = new Scanner(program, reporter);
         List<Token> actual = scanner.scan();
 
+        assertFalse(reporter.hasErrors());
         assertIterableEquals(expected, actual);
     }
 
@@ -178,9 +206,12 @@ public class ScannerTest {
                 new Token(TokenType.EOF, "", new Cursor(1, 35))
         );
 
-        Scanner scanner = new Scanner(program);
+        ErrorReporter reporter = new ErrorReporter();
+
+        Scanner scanner = new Scanner(program, reporter);
         List<Token> actual = scanner.scan();
 
+        assertFalse(reporter.hasErrors());
         assertIterableEquals(expected, actual);
     }
 }
