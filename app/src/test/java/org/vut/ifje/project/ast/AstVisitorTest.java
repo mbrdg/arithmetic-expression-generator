@@ -14,7 +14,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AstVisitorTest {
-    @Test void visitNumExpr() {
+    @Test
+    void visitNumExpr() {
         List<String> expected = List.of("100", "-100");
 
         List<Expr> expressions = List.of(
@@ -22,7 +23,7 @@ public class AstVisitorTest {
                 new NumExpr(new Token(TokenType.NEGATIVE_NUMBER, "100", new Cursor()))
         );
 
-        Visitor<String> visitor = new AstVisitor();
+        AstVisitor visitor = new AstVisitor();
         List<String> actual = expressions.stream()
                 .map(expr -> expr.accept(visitor))
                 .toList();
@@ -30,7 +31,8 @@ public class AstVisitorTest {
         assertIterableEquals(actual, expected);
     }
 
-    @Test void visitSimpleBinaryExpr() {
+    @Test
+    void visitSimpleBinaryExpr() {
         String expected = "1 + 1";
 
         Expr expression = new AddExpr(
@@ -38,33 +40,35 @@ public class AstVisitorTest {
                 new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1", new Cursor()))
         );
 
-        Visitor<String> visitor = new AstVisitor();
+        AstVisitor visitor = new AstVisitor();
         String actual = expression.accept(visitor);
 
         assertEquals(expected, actual);
     }
 
-    @Test void visitNestedBinaryExpr() {
+    @Test
+    void visitNestedBinaryExpr() {
         String expected = "1 + 1 * 3 + 2";
 
         Expr expression = new AddExpr(
                 new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1", new Cursor())),
                 new AddExpr(
                         new MulExpr(
-                            new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1", new Cursor())),
-                            new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "3", new Cursor()))
+                                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "1", new Cursor())),
+                                new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "3", new Cursor()))
                         ),
                         new NumExpr(new Token(TokenType.POSITIVE_NUMBER, "2", new Cursor()))
                 )
         );
 
-        Visitor<String> visitor = new AstVisitor();
+        AstVisitor visitor = new AstVisitor();
         String actual = expression.accept(visitor);
 
         assertEquals(expected, actual);
     }
 
-    @Test void visitNestedBinaryExprWithPrecedence() {
+    @Test
+    void visitNestedBinaryExprWithPrecedence() {
         String expected = "(1 + 1) * (3 + 2)";
 
         Expr expression = new MulExpr(
@@ -78,7 +82,7 @@ public class AstVisitorTest {
                 )
         );
 
-        Visitor<String> visitor = new AstVisitor();
+        AstVisitor visitor = new AstVisitor();
         String actual = expression.accept(visitor);
 
         assertEquals(expected, actual);
