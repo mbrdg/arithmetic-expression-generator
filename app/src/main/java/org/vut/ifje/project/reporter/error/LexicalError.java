@@ -9,6 +9,6 @@ public class LexicalError extends Error {
 
     @Override
     public String print() {
-        return "Lexical error at " + cursor + " : " + explanation;
+        return "Lexical error at " + cursor + ": " + explanation;
     }
 }
