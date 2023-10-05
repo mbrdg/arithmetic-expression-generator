@@ -48,13 +48,13 @@ public class Scanner {
 
     private void scanToken() {
         switch (iterator.current()) {
-            case '(' -> tokens.add(new Token(TokenType.LEFT_PARENTHESIS, "(", cursor));
-            case ')' -> tokens.add(new Token(TokenType.RIGHT_PARENTHESIS, ")", cursor));
-            case ',' -> tokens.add(new Token(TokenType.COMMA, ",", cursor));
+            case '(' -> tokens.add(new Token(TokenType.LEFT_PARENTHESIS, "(", new Cursor(cursor)));
+            case ')' -> tokens.add(new Token(TokenType.RIGHT_PARENTHESIS, ")", new Cursor(cursor)));
+            case ',' -> tokens.add(new Token(TokenType.COMMA, ",", new Cursor(cursor)));
             case '+' -> tokens.add(number(TokenType.POSITIVE_NUMBER, true));
             case '-' -> tokens.add(number(TokenType.NEGATIVE_NUMBER, true));
             case '/' -> comment();
-            case '\n' -> cursor.incrementLine();
+            case '\n' -> cursor.newline();
             case ' ', '\t', '\r' -> {}
             default -> {
                 if (isDigit(iterator.current())) {
@@ -63,13 +63,13 @@ public class Scanner {
                     tokens.add(identifier());
                 } else {
                     String explanation = String.format("unknown symbol '%c'", iterator.current());
-                    reporter.add(new LexicalError(explanation, cursor));
+                    reporter.add(new LexicalError(explanation, new Cursor(cursor)));
                 }
             }
         }
 
         iterator.next();
-        cursor.incrementColumn();
+        cursor.advance();
     }
 
     private void comment() {
@@ -78,18 +78,18 @@ public class Scanner {
             return;
         }
 
-        cursor.incrementColumn();
+        cursor.advance();
 
         while (!done()) {
             iterator.next();
-            cursor.incrementColumn();
+            cursor.advance();
 
             if (iterator.current() == '\n') {
-                cursor.incrementLine();
+                cursor.advance();
             }
 
             if (iterator.current() == '*' && iterator.next() == '/') {
-                cursor.incrementColumn();
+                cursor.advance();
                 break;
             }
         }
@@ -97,69 +97,71 @@ public class Scanner {
 
     private Token number(TokenType type, boolean tokenContainsSign) {
         StringBuilder lexeme = new StringBuilder();
-        Cursor tokenCursor = new Cursor(cursor.line(), cursor.column());
+        Cursor start = new Cursor(cursor);
 
         if (tokenContainsSign) {
             iterator.next();
-            cursor.incrementColumn();
+            cursor.advance();
         }
 
         while (isDigit(iterator.current())) {
             lexeme.append(iterator.current());
             iterator.next();
-            cursor.incrementColumn();
+            cursor.advance();
         }
 
         if (iterator.current() == '.' && isDigit(lookahead())) {
             lexeme.append('.');
             iterator.next();
-            cursor.incrementColumn();
+            cursor.advance();
 
             do {
                 lexeme.append(iterator.current());
                 iterator.next();
-                cursor.incrementColumn();
+                cursor.advance();
             } while (isDigit(iterator.current()));
         }
 
         if (iterator.current() == 'e' && isDigit(lookahead())) {
             lexeme.append('e');
             iterator.next();
-            cursor.incrementColumn();
+            cursor.advance();
 
             do {
                 lexeme.append(iterator.current());
                 iterator.next();
-                cursor.incrementColumn();
+                cursor.advance();
             } while (isDigit(iterator.current()));
         }
 
-        // Put the iterator in the correct position to advance in scanToken()
+        // Put the iterator and cursor in the correct position to advance in scanToken()
         iterator.previous();
+        cursor.rewind();
 
-        return new Token(type, lexeme.toString(), tokenCursor);
+        return new Token(type, lexeme.toString(), start);
     }
 
     private Token identifier() {
         StringBuilder lexeme = new StringBuilder();
-        Cursor tokenCursor = new Cursor(cursor.line(), cursor.column());
+        Cursor start = new Cursor(cursor);
 
         do {
             lexeme.append(iterator.current());
             iterator.next();
-            cursor.incrementColumn();
+            cursor.advance();
         } while (isAlpha(iterator.current()));
 
-        // Put the iterator in the correct position to advance in scanToken()
+        // Put the iterator and cursor in the correct position to advance in scanToken()
         iterator.previous();
+        cursor.rewind();
 
         TokenType type = functions.getOrDefault(lexeme.toString(), TokenType.UNKNOWN);
         if (type == TokenType.UNKNOWN) {
             String explanation = String.format("unknown identifier '%s'", lexeme);
-            reporter.add(new LexicalError(explanation, cursor));
+            reporter.add(new LexicalError(explanation, start));
         }
 
-        return new Token(type, lexeme.toString(), tokenCursor);
+        return new Token(type, lexeme.toString(), start);
     }
 
     private boolean isDigit(char character) {

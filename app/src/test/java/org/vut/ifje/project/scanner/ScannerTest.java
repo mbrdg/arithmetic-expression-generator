@@ -98,7 +98,7 @@ public class ScannerTest {
 
         List<Token> expected = List.of(
                 new Token(TokenType.NEGATIVE_NUMBER, "100.00e2", new Cursor()),
-                new Token(TokenType.EOF, "", new Cursor(1, 110))
+                new Token(TokenType.EOF, "", new Cursor(1, 10))
         );
 
         Scanner scanner = new Scanner(number);
@@ -116,13 +116,13 @@ public class ScannerTest {
                 new Token(TokenType.POW, "pow", new Cursor(1, 5)),
                 new Token(TokenType.LEFT_PARENTHESIS, "(", new Cursor(1, 8)),
                 new Token(TokenType.NEGATIVE_NUMBER, "100.0", new Cursor(1, 9)),
-                new Token(TokenType.COMMA, ",", new Cursor(1, 14)),
-                new Token(TokenType.POSITIVE_NUMBER, "002e12", new Cursor(1, 16)),
-                new Token(TokenType.RIGHT_PARENTHESIS, ")", new Cursor(1, 22)),
-                new Token(TokenType.COMMA, ",", new Cursor(1, 23)),
-                new Token(TokenType.POSITIVE_NUMBER, "3", new Cursor(1, 25)),
-                new Token(TokenType.RIGHT_PARENTHESIS, ")", new Cursor(1, 26)),
-                new Token(TokenType.EOF, "", new Cursor(1, 27))
+                new Token(TokenType.COMMA, ",", new Cursor(1, 15)),
+                new Token(TokenType.POSITIVE_NUMBER, "002e12", new Cursor(1, 17)),
+                new Token(TokenType.RIGHT_PARENTHESIS, ")", new Cursor(1, 23)),
+                new Token(TokenType.COMMA, ",", new Cursor(1, 24)),
+                new Token(TokenType.POSITIVE_NUMBER, "3", new Cursor(1, 26)),
+                new Token(TokenType.RIGHT_PARENTHESIS, ")", new Cursor(1, 27)),
+                new Token(TokenType.EOF, "", new Cursor(1, 28))
         );
 
         Scanner scanner = new Scanner(program);
