@@ -46,3 +46,10 @@ tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+tasks.named<Jar>("jar") {
+    // Set the manifest with the correct Main-Class attribute
+    manifest {
+        attributes["Main-Class"] = "org.vut.ifje.project.App"
+    }
+}
