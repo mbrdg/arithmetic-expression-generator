@@ -3,7 +3,16 @@ package org.vut.ifje.project.ast.expr.binary;
 import org.vut.ifje.project.ast.expr.Expr;
 import org.vut.ifje.project.ast.Visitor;
 
+/**
+ * A modulo expression represents the modulo between two expressions.
+ */
 public class ModExpr extends BinaryExpr {
+    /**
+     * Constructs and initializes a modulo expression with the left and right side expressions.
+     *
+     * @param left  the left side expression
+     * @param right the right side expression
+     */
     public ModExpr(Expr left, Expr right) {
         super(left, right);
     }

@@ -20,7 +20,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParserTest {
-    @Test void parseNumber() {
+    @Test
+    void parseNumber() {
         List<Token> tokens = List.of(
                 new Token(TokenType.NEGATIVE_NUMBER, "123", new Cursor()),
                 new Token(TokenType.EOF, "", new Cursor(1, 4))
@@ -39,7 +40,8 @@ public class ParserTest {
         assertEquals(expected.accept(visitor), actual.get().accept(visitor));
     }
 
-    @Test void parseOperation() {
+    @Test
+    void parseOperation() {
         List<Token> tokens = List.of(
                 new Token(TokenType.SUB, "sub", new Cursor()),
                 new Token(TokenType.LEFT_PARENTHESIS, "(", new Cursor()),
@@ -66,7 +68,8 @@ public class ParserTest {
         assertEquals(expected.accept(visitor), actual.get().accept(visitor));
     }
 
-    @Test void parseNestedOperations() {
+    @Test
+    void parseNestedOperations() {
         List<Token> tokens = List.of(
                 new Token(TokenType.ADD, "add", new Cursor()),
                 new Token(TokenType.LEFT_PARENTHESIS, "(", new Cursor(1, 4)),

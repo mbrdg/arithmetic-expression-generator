@@ -15,15 +15,34 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
 
+/**
+ * The parser is responsible for determining if a given sequence of tokens is included in the source language.
+ * It receives as input, from the scanner, a list of tokens while detecting all syntactic errors that might be present.
+ * The output shall be an AST that represents the source program as a tree.
+ *
+ * @see org.vut.ifje.project.scanner.Scanner
+ */
 public class Parser {
     private final ListIterator<Token> iterator;
     private final ErrorReporter reporter;
 
+    /**
+     * Constructs and initializes a parser with a list of tokens and a reporter.
+     *
+     * @param tokens   the list of tokens
+     * @param reporter the reporter to which syntactic errors may be reported
+     */
     public Parser(List<Token> tokens, ErrorReporter reporter) {
         this.iterator = tokens.listIterator();
         this.reporter = reporter;
     }
 
+    /**
+     * Instructs the parser to construct an AST based on the list tokens that this object holds.
+     *
+     * @return the root expression of the AST
+     * @see org.vut.ifje.project.ast.expr.Expr
+     */
     public Optional<? extends Expr> parse() {
         if (!iterator.hasNext()) {
             reporter.add(new SyntaxError("no token found", new Cursor()));
@@ -106,12 +125,24 @@ public class Parser {
         }
 
         switch (token.type()) {
-            case ADD -> { return Optional.of(new AddExpr(first.expr().get(), second.expr().get())); }
-            case SUB -> { return Optional.of(new SubExpr(first.expr().get(), second.expr().get())); }
-            case MUL -> { return Optional.of(new MulExpr(first.expr().get(), second.expr().get())); }
-            case DIV -> { return Optional.of(new DivExpr(first.expr().get(), second.expr().get())); }
-            case MOD -> { return Optional.of(new ModExpr(first.expr().get(), second.expr().get())); }
-            case POW -> { return Optional.of(new PowExpr(first.expr().get(), second.expr().get())); }
+            case ADD -> {
+                return Optional.of(new AddExpr(first.expr().get(), second.expr().get()));
+            }
+            case SUB -> {
+                return Optional.of(new SubExpr(first.expr().get(), second.expr().get()));
+            }
+            case MUL -> {
+                return Optional.of(new MulExpr(first.expr().get(), second.expr().get()));
+            }
+            case DIV -> {
+                return Optional.of(new DivExpr(first.expr().get(), second.expr().get()));
+            }
+            case MOD -> {
+                return Optional.of(new ModExpr(first.expr().get(), second.expr().get()));
+            }
+            case POW -> {
+                return Optional.of(new PowExpr(first.expr().get(), second.expr().get()));
+            }
             default -> reporter.add(new SyntaxError(
                     String.format("invalid token of type %s as a function name", token.type()),
                     "did you mean one of the following: 'add', 'sub', 'mul', 'div', 'mod' or 'pow'?",

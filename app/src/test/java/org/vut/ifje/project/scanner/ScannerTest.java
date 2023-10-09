@@ -9,7 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 public class ScannerTest {
-    @Test void scanPositiveNumberWithSign() {
+    @Test
+    void scanPositiveNumberWithSign() {
         String number = "+100";
 
         List<Token> expected = List.of(
@@ -26,7 +27,8 @@ public class ScannerTest {
         assertIterableEquals(expected, actual);
     }
 
-    @Test void scanPositiveNumberWithoutSign() {
+    @Test
+    void scanPositiveNumberWithoutSign() {
         String number = "100";
 
         List<Token> expected = List.of(
@@ -43,7 +45,8 @@ public class ScannerTest {
         assertIterableEquals(expected, actual);
     }
 
-    @Test void scanNegativeNumber() {
+    @Test
+    void scanNegativeNumber() {
         String number = "-100";
 
         List<Token> expected = List.of(
@@ -60,7 +63,8 @@ public class ScannerTest {
         assertIterableEquals(expected, actual);
     }
 
-    @Test void scanFractionalNumber() {
+    @Test
+    void scanFractionalNumber() {
         String number = "100.00";
 
         List<Token> expected = List.of(
@@ -77,7 +81,8 @@ public class ScannerTest {
         assertIterableEquals(expected, actual);
     }
 
-    @Test void scanExponentialNumber() {
+    @Test
+    void scanExponentialNumber() {
         String number = "100e2";
 
         List<Token> expected = List.of(
@@ -94,7 +99,8 @@ public class ScannerTest {
         assertIterableEquals(expected, actual);
     }
 
-    @Test void scanPositiveFractionalExponentialNumber() {
+    @Test
+    void scanPositiveFractionalExponentialNumber() {
         String number = "100.00e2";
 
         List<Token> expected = List.of(
@@ -111,7 +117,8 @@ public class ScannerTest {
         assertIterableEquals(expected, actual);
     }
 
-    @Test void scanNegativeFractionalExponentialNumber() {
+    @Test
+    void scanNegativeFractionalExponentialNumber() {
         String number = "-100.00e2";
 
         List<Token> expected = List.of(
@@ -128,7 +135,8 @@ public class ScannerTest {
         assertIterableEquals(expected, actual);
     }
 
-    @Test void scanSimpleProgram() {
+    @Test
+    void scanSimpleProgram() {
         String program = "mod(pow(-100.0, 002e12), 3)";
 
         List<Token> expected = List.of(
@@ -155,7 +163,8 @@ public class ScannerTest {
         assertIterableEquals(expected, actual);
     }
 
-    @Test void scanProgramWithComments() {
+    @Test
+    void scanProgramWithComments() {
         String program = "add( 1, /* This is 1 + 1 */ 1 )";
 
         List<Token> expected = List.of(
@@ -177,7 +186,8 @@ public class ScannerTest {
         assertIterableEquals(expected, actual);
     }
 
-    @Test void scanProgramWithNestedOperators() {
+    @Test
+    void scanProgramWithNestedOperators() {
         String program = "add(5, mul(3, sub(10, pow(6, 4))))";
 
         List<Token> expected = List.of(

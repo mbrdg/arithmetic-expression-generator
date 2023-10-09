@@ -10,6 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A scanner is responsible for splitting a stream of characters into a list of tokens and of performing lexical analysis.
+ * The input of this is a string that contains the program that will be translated.
+ * The output of this is a list of tokens which shall be passed to a parser for syntactical analysis.
+ *
+ * @see org.vut.ifje.project.parser.Parser
+ */
 public class Scanner {
     private static final Map<String, TokenType> functions = Map.of(
             "add", TokenType.ADD,
@@ -25,11 +32,22 @@ public class Scanner {
     private final List<Token> tokens = new ArrayList<>();
     private final Cursor cursor = new Cursor();
 
+    /**
+     * Constructs and initializes this a scanner with the source program and a reporter
+     *
+     * @param source   the source program as a string
+     * @param reporter the reporter to which lexical errors may be reported
+     */
     public Scanner(String source, ErrorReporter reporter) {
         this.iterator = new StringCharacterIterator(source);
         this.reporter = reporter;
     }
 
+    /**
+     * Instructs this scanner to split the source program into a list of tokens
+     *
+     * @return the list of tokens
+     */
     public List<Token> scan() {
         while (!done()) {
             scanToken();
@@ -52,7 +70,8 @@ public class Scanner {
             case '-' -> tokens.add(number(TokenType.NEGATIVE_NUMBER, true));
             case '/' -> comment();
             case '\n' -> cursor.newline();
-            case ' ', '\t', '\r' -> {}
+            case ' ', '\t', '\r' -> {
+            }
             default -> {
                 if (isDigit(iterator.current())) {
                     tokens.add(number(TokenType.POSITIVE_NUMBER, false));

@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ErrorReporter implements Reporter<String> {
+/**
+ * Error reporter implements the <code>Reporter</code> interface for strings.
+ */
+public class ErrorReporter implements Reporter<Error, String> {
     private final List<Error> errors = new ArrayList<>();
 
     @Override
