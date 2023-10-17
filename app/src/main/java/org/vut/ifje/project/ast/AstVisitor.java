@@ -20,41 +20,46 @@ public class AstVisitor implements Visitor<String> {
 
     @Override
     public String visitAddExpr(AddExpr expression) {
-        return visitBinaryExpr(expression);
+        return visitBinaryExpr(expression, " ");
     }
 
     @Override
     public String visitSubExpr(SubExpr expression) {
-        return visitBinaryExpr(expression);
+        return visitBinaryExpr(expression, " ");
     }
 
     @Override
     public String visitMulExpr(MulExpr expression) {
-        return visitBinaryExpr(expression);
+        return visitBinaryExpr(expression, " ");
     }
 
     @Override
     public String visitDivExpr(DivExpr expression) {
-        return visitBinaryExpr(expression);
+        return visitBinaryExpr(expression, " ");
     }
 
     @Override
     public String visitModExpr(ModExpr expression) {
-        return visitBinaryExpr(expression);
+        return visitBinaryExpr(expression, " ");
     }
 
     @Override
     public String visitPowExpr(PowExpr expression) {
-        return visitBinaryExpr(expression);
+        // NOTE: This is where right-associativity is handled for exponentiation
+        if (expression.left().precedence().compareTo(expression.precedence()) <= 0) {
+            return parenthesize(expression.left()) + expression.separator() + expression.right().accept(this);
+        }
+
+        return visitBinaryExpr(expression, "");
     }
 
-    private String visitBinaryExpr(BinaryExpr expression) {
+    private String visitBinaryExpr(BinaryExpr expression, String separator) {
         return parenthesizeIfNeeded(expression, expression.left()) +
-                ' ' + expression.separator() + ' ' +
+                separator + expression.separator() + separator +
                 parenthesizeIfNeeded(expression, expression.right());
     }
 
-    private boolean needsParenthesis(Expr outer, Expr inner) {
+    private boolean innerHasLowerPrecedence(Expr outer, Expr inner) {
         return inner.precedence().compareTo(outer.precedence()) < 0;
     }
 
@@ -63,6 +68,6 @@ public class AstVisitor implements Visitor<String> {
     }
 
     private String parenthesizeIfNeeded(Expr outer, Expr inner) {
-        return needsParenthesis(outer, inner) ? parenthesize(inner) : inner.accept(this);
+        return innerHasLowerPrecedence(outer, inner) ? parenthesize(inner) : inner.accept(this);
     }
 }
