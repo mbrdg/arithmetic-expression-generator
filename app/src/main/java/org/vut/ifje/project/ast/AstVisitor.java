@@ -12,6 +12,13 @@ import org.vut.ifje.project.scanner.TokenType;
  * @see org.vut.ifje.project.ast.Visitor
  */
 public class AstVisitor implements Visitor<String> {
+
+    // Helper enum to tell whether we are dealing with a lhs or rhs expression
+    private enum Side {
+        LEFT,
+        RIGHT
+    }
+
     @Override
     public String visitNumExpr(NumExpr expression) {
         Token token = expression.token();
@@ -20,54 +27,67 @@ public class AstVisitor implements Visitor<String> {
 
     @Override
     public String visitAddExpr(AddExpr expression) {
-        return visitBinaryExpr(expression, " ");
+        return visitBinaryExpr(expression);
     }
 
     @Override
     public String visitSubExpr(SubExpr expression) {
-        return visitBinaryExpr(expression, " ");
+        return visitBinaryExpr(expression);
     }
 
     @Override
     public String visitMulExpr(MulExpr expression) {
-        return visitBinaryExpr(expression, " ");
+        return visitBinaryExpr(expression);
     }
 
     @Override
     public String visitDivExpr(DivExpr expression) {
-        return visitBinaryExpr(expression, " ");
+        return visitBinaryExpr(expression);
     }
 
     @Override
     public String visitModExpr(ModExpr expression) {
-        return visitBinaryExpr(expression, " ");
+        return visitBinaryExpr(expression);
     }
 
     @Override
     public String visitPowExpr(PowExpr expression) {
+        StringBuilder builder = new StringBuilder();
+
         // NOTE: This is where right-associativity is handled for exponentiation
         if (expression.left().precedence().compareTo(expression.precedence()) <= 0) {
-            return parenthesize(expression.left()) + expression.separator() + expression.right().accept(this);
+            builder.append(parenthesize(expression.left().accept(this)));
+        } else {
+            builder.append(expression.left().accept(this));
         }
 
-        return visitBinaryExpr(expression, "");
+        return builder.append(expression.separator())
+                .append(parenthesizeIfNeeded(expression, expression.right(), Side.RIGHT))
+                .toString();
     }
 
-    private String visitBinaryExpr(BinaryExpr expression, String separator) {
-        return parenthesizeIfNeeded(expression, expression.left()) +
-                separator + expression.separator() + separator +
-                parenthesizeIfNeeded(expression, expression.right());
+    private String visitBinaryExpr(BinaryExpr expression) {
+        return parenthesizeIfNeeded(expression, expression.left(), Side.LEFT) +
+                ' ' + expression.separator() + ' ' +
+                parenthesizeIfNeeded(expression, expression.right(), Side.RIGHT);
     }
 
     private boolean innerHasLowerPrecedence(Expr outer, Expr inner) {
         return inner.precedence().compareTo(outer.precedence()) < 0;
     }
 
-    private String parenthesize(Expr expression) {
-        return '(' + expression.accept(this) + ')';
+    private String parenthesize(String expression) {
+        return '(' + expression + ')';
     }
 
-    private String parenthesizeIfNeeded(Expr outer, Expr inner) {
-        return innerHasLowerPrecedence(outer, inner) ? parenthesize(inner) : inner.accept(this);
+    private String parenthesizeIfNeeded(Expr outer, Expr inner, Side side) {
+        String innerExpansion = inner.accept(this);
+
+        // FIXME: Ad-hoc solution! We check only to see if the left most char in the rhs expression is '-'.
+        if (innerHasLowerPrecedence(outer, inner) || (side == Side.RIGHT && innerExpansion.startsWith("-"))) {
+            return parenthesize(innerExpansion);
+        }
+
+        return innerExpansion;
     }
 }
