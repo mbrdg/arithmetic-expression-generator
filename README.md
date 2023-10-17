@@ -59,12 +59,9 @@ The implementation tries to closely follow what is described in the assignment
 description. 
 
 It contains features such as error handling and also tries to minimize
-the number of parethesis according to the precedence of operations.
-
-> [!NOTE]
-> In cases where it is not clear whether parenthesis should be present or not
-> the decision was to left the parenthesis out, e.g. `add(1, -1)` generates
-> `1 + -1`.
+the number of parenthesis according to the precedence and associativity of 
+operations. It also adds parenthesis when negative numbers can cause ambiguity,
+e.g `add(3, sub(-10, -5))` generates `3 + (-10 - (-5))`
 
 ### Implementation Architecture
 
