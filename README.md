@@ -24,7 +24,7 @@ If you are able to spin up `gradlew` then running the program, from the project
 root, is as simple as:
 
 ```sh
-$ ./gradlew run
+$ ./gradlew run -q
 ```
 
 > [!NOTE]
@@ -46,12 +46,8 @@ This way it is possible to use the program with much more flexibility using
 unix pipes:
 
 ```sh
-echo in.txt | ./generator
+$ cat in.txt | ./gradlew run -q
 ```
-
-> [!NOTE]
-> Please substitute `./generator` with the commands presented in the subsection
-> above.
 
 ## Implementation Details & Other Considerations
 
